@@ -39,4 +39,4 @@ Repository pubblico vuoto. **ai_video3060_12G:** Repository created → No sourc
 
 ## Contacts
 
-[Telegram @Feudorlab1](https://t.me/Feudorlab1) · [+7 926 041 1145](tel:+79260411145) · [feudor.lab@yandex.ru](mailto:feudor.lab@yandex.ru) · [obzorniky@gmail.com](mailto:obzorniky@gmail.com) · [peginelab.ru](https://peginelab.ru/).
+[Telegram @Feudorlab1](https://t.me/Feudorlab1) · [feudor.lab@yandex.ru](mailto:feudor.lab@yandex.ru) · [obzorniky@gmail.com](mailto:obzorniky@gmail.com) · [peginelab.ru](https://peginelab.ru/).
