@@ -16,4 +16,4 @@ jobs:
       - name: Compile
         run: uv run python -m compileall -q app
       - name: Unit tests
-        run: uv run pytest -q
+        run: uv run python -m pytest -q
