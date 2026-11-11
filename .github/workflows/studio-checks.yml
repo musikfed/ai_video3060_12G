@@ -1,0 +1,19 @@
+name: Studio checks
+on:
+  push:
+    branches: [main, feature/studio-10720-mvp]
+  pull_request:
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Install runtime packages
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install dependencies
+        run: uv sync --group dev
+      - name: Compile
+        run: uv run python -m compileall -q app
+      - name: Unit tests
+        run: uv run pytest -q
