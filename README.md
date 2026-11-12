@@ -1,8 +1,13 @@
-# ai_video3060_12G · Repository placeholder
+# PEGINELAB Creative Studio — перезапуск
 
-**Current status: empty / no verified application files.** This presentation does not claim that a video AI engine has been implemented.
+**Текущий статус: чистое проектирование. Рабочего приложения и веб-интерфейса в этой ветке нет.**
 
+Аппаратная цель: Ubuntu 24.04, RTX 3060 12 ГБ, 48 ГБ RAM DDR3, 2 × Xeon. Приоритет — качество, а не скорость. Основной формат — **1280×720**, иногда **1920×1080**, со звуком и возможностью сохранять персонажей и сцену.
 
-[**Eleven-language presentation and contacts**](docs/showcase/README.md)
+Старый Wan 2.2 TI2V-5B / SDXL / двухколоночный UI исключён из нового дерева. Переустановку старых моделей не предлагать.
 
-Original source will be added only after a real implementation is provided.
+- [Краткое заключение о неудачном опыте](docs/FAILED_EXPERIMENT_RU.md)
+- [План будущего развёртывания](docs/DEPLOYMENT_PLAN_RU.md)
+- [Безопасный скрипт очистки CORE](scripts/cleanup-old-install.sh)
+
+До авторской зарисовки интерфейса **не создаём веб-морду**. Новые большие веса скачиваем только после утверждённого плана конкретного теста и самостоятельного подтверждения качества видео со звуком.
