@@ -1,7 +1,7 @@
-# PEGINELAB Windows SDK Doctor v2: read-only. Windows PowerShell 5.1+.
+# PEGINELAB Windows SDK Doctor v3: read-only. Windows PowerShell 5.1+.
 # No downloads, registry edits, PATH modifications or installation.
 $ErrorActionPreference = 'Continue'
-Write-Host '=== PEGINELAB Windows SDK Doctor v2 ===' -ForegroundColor Cyan
+Write-Host '=== PEGINELAB Windows SDK Doctor v3 ===' -ForegroundColor Cyan
 Write-Host ('Windows: ' + [Environment]::OSVersion.VersionString)
 Write-Host ('PowerShell: ' + $PSVersionTable.PSVersion)
 Write-Host ('Architecture x64 OS: ' + [Environment]::Is64BitOperatingSystem)
@@ -21,7 +21,7 @@ foreach($key in @('HKLM:\SOFTWARE\Microsoft\Windows Kits\Installed Roots','HKLM:
   if(Test-Path $key) {
     $record=Get-ItemProperty $key -ErrorAction SilentlyContinue
     foreach($name in @('KitsRoot10','KitsRoot81')) {
-      if($record -and $record.$name -and !$roots.Contains($record.$name)){$roots.Add($record.$name)}
+      if($record -and $record.$name){$normalized=$record.$name.TrimEnd('\');if(!$roots.Contains($normalized)){$roots.Add($normalized)}}
     }
   }
 }
@@ -30,7 +30,7 @@ foreach($candidate in @(
   'F:\WindowsKits\10','T:\WindowsKits\10',
   'F:\Program Files (x86)\Windows Kits\10','T:\Program Files (x86)\Windows Kits\10'
 )) {
-  if((Test-Path -LiteralPath $candidate) -and !$roots.Contains($candidate)){$roots.Add($candidate)}
+  $normalized=$candidate.TrimEnd('\');if((Test-Path -LiteralPath $normalized) -and !$roots.Contains($normalized)){$roots.Add($normalized)}
 }
 Write-Host ''
 Write-Host '--- WINDOWS SDK ---' -ForegroundColor Cyan
@@ -73,15 +73,22 @@ if(Test-Path -LiteralPath $vswhere){
 $devcmd=$null
 if($vsPath){$devcmd=Join-Path $vsPath 'Common7\Tools\VsDevCmd.bat'}
 if($devcmd -and (Test-Path -LiteralPath $devcmd)){
-  # Build Tools install does not add cl.exe to the regular PowerShell PATH.
-  # Use an isolated child cmd.exe, do not change caller's environment.
-  $cmdLine='""'+$devcmd+'" -arch=amd64 -host_arch=amd64 >nul && where cl && cl /Bv"'
-  $res=RunCommand 'cmd.exe' @('/d','/s','/c',$cmdLine)
-  if($res.Exit -eq 0){
-    Report OK 'MSVC x64 compilation environment' 'VsDevCmd initialized; cl.exe works'
-    Write-Host (($res.Text -split "[\r\n]+" | Select-Object -First 12) -join [Environment]::NewLine)
-  } else {Report WARN 'MSVC toolchain initialization' $res.Text}
+  Report OK 'VsDevCmd.bat present' $devcmd
+  Report INFO 'MSVC shell environment' 'Use the installed x64 Native Tools Command Prompt to activate headers, libraries and PATH'
 } else {Report WARN 'VsDevCmd.bat' 'Not found; inspect Build Tools workloads'}
+if($vsPath){
+  $vcRoot=Join-Path $vsPath 'VC\Tools\MSVC'
+  $compilers=@(Get-ChildItem -LiteralPath $vcRoot -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | ForEach-Object {
+    Join-Path $_.FullName 'bin\Hostx64\x64\cl.exe'
+  } | Where-Object {Test-Path -LiteralPath $_})
+  if($compilers.Count -gt 0){
+    $clPath=$compilers[0]
+    Report OK 'MSVC x64 compiler file' $clPath
+    $v=RunCommand $clPath @('/Bv')
+    if($v.Exit -eq 0){Report OK 'cl.exe /Bv' (($v.Text -split "[\r\n]+" | Select-Object -First 3) -join ' | ')}
+    else {Report WARN 'cl.exe /Bv outside developer environment' ('Exit '+$v.Exit+'; '+($v.Text -split "[\r\n]+" | Select-Object -First 2))}
+  } else {Report WARN 'MSVC x64 compiler' 'No cl.exe under VC\Tools\MSVC; install C++ build tools workload'}
+}
 Write-Host ''
 Write-Host '--- PYTHON AND OTHER TOOLS ---' -ForegroundColor Cyan
 foreach($name in @('python','py','uv','git','cl','link','signtool','wpr','wpa','windbg','usbview')){
@@ -107,5 +114,5 @@ Write-Host ''
 Write-Host '=== Summary ===' -ForegroundColor Cyan
 if($hasHeaders -and $hasLibs){Report OK 'SDK x64 headers/libraries' 'Available'}
 else{Report WARN 'SDK x64 headers/libraries' 'Not verified'}
-Report INFO 'USBView' 'Optional diagnostic utility, not automatically installed with every SDK selection'
+Report INFO 'USBView' 'Optional diagnostic utility. SDK may be installed with only some features; check installer component selections.'
 Report INFO 'Security' 'Read-only diagnostics; no environment settings changed'
