@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "id": "ai_video3060_12G",
+  "title": "ai_video3060_12G",
+  "version": "—",
+  "description": "Текущий статус: чистое проектирование. Рабочего приложения и веб-интерфейса в этой ветке нет.",
+  "subtitle": null,
+  "tags": [
+    "PowerShell"
+  ],
+  "visibility": "public",
+  "publication": "publish_on_merge",
+  "public_private_approved": false,
+  "display_mode": "diagram",
+  "status": "Черновик — ожидает проверки",
+  "repo_url": "https://github.com/musikfed/ai_video3060_12G",
+  "screenshots": [],
+  "cover": "vitrine/generated/cover.svg",
+  "cover_type": "schematic-not-screenshot",
+  "screenshot_source": "not-available"
+}
